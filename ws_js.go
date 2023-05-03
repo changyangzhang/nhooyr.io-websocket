@@ -13,9 +13,9 @@ import (
 	"sync"
 	"syscall/js"
 
-	"nhooyr.io/websocket/internal/bpool"
-	"nhooyr.io/websocket/internal/wsjs"
-	"nhooyr.io/websocket/internal/xsync"
+	"github.com/changyangzhang/nhooyr.io-websocket/internal/bpool"
+	"github.com/changyangzhang/nhooyr.io-websocket/internal/wsjs"
+	"github.com/changyangzhang/nhooyr.io-websocket/internal/xsync"
 )
 
 // Conn provides a wrapper around the browser WebSocket API.

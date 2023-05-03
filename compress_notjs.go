@@ -1,3 +1,4 @@
+//go:build !js
 // +build !js
 
 package websocket
@@ -7,7 +8,7 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/klauspost/compress/flate"
+	"github.com/changyangzhang/klauspost-compress/flate"
 )
 
 func (m CompressionMode) opts() *compressionOptions {
