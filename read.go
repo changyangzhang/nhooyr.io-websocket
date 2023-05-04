@@ -84,8 +84,8 @@ func newMsgReader(c *Conn) *msgReader {
 		fin: true,
 	}
 	mr.readFunc = mr.read
-
-	mr.limitReader = newLimitReader(c, io.Reader(mr.readFunc), defaultReadLimit+1)
+	ioRead := io.Reader(mr.readFunc)
+	mr.limitReader = newLimitReader(c, ioRead, defaultReadLimit+1)
 	return mr
 }
 
