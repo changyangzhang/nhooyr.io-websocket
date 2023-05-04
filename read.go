@@ -84,8 +84,7 @@ func newMsgReader(c *Conn) *msgReader {
 		fin: true,
 	}
 	mr.readFunc = mr.read
-	ioRead := io.Reader(mr.readFunc)
-	mr.limitReader = newLimitReader(c, ioRead, defaultReadLimit+1)
+	mr.limitReader = newLimitReader(c, mr.readFunc, defaultReadLimit+1)
 	return mr
 }
 
@@ -434,12 +433,12 @@ func (mr *msgReader) read(p []byte) (int, error) {
 
 type limitReader struct {
 	c     *Conn
-	r     io.Reader
+	r     readerFunc
 	limit xsync.Int64
 	n     int64
 }
 
-func newLimitReader(c *Conn, r io.Reader, limit int64) *limitReader {
+func newLimitReader(c *Conn, r readerFunc, limit int64) *limitReader {
 	lr := &limitReader{
 		c: c,
 	}
@@ -448,7 +447,7 @@ func newLimitReader(c *Conn, r io.Reader, limit int64) *limitReader {
 	return lr
 }
 
-func (lr *limitReader) reset(r io.Reader) {
+func (lr *limitReader) reset(r readerFunc) {
 	lr.n = lr.limit.Load()
 	lr.r = r
 }
