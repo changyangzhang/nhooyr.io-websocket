@@ -4,6 +4,8 @@ github.com/changyangzhang/klauspost-compress v0.0.4 h1:IdYbk4W6sbKgUJGwT1hI7MazV
 github.com/changyangzhang/klauspost-compress v0.0.4/go.mod h1:d2hF+Mw1Gnksof6bN1rgLh8MsM0kTyjnqKupJEenklU=
 github.com/changyangzhang/klauspost-compress v0.0.5 h1:fXIKrTzR97GxHB6TUwpK/Pw6E7wUPs7NDhEEI9/6xi8=
 github.com/changyangzhang/klauspost-compress v0.0.5/go.mod h1:d2hF+Mw1Gnksof6bN1rgLh8MsM0kTyjnqKupJEenklU=
+github.com/changyangzhang/klauspost-compress v0.0.6 h1:Z9/UtytS2DVZ6jUm87Y1Ryfqa/CW3rPObg6iGa4UgIM=
+github.com/changyangzhang/klauspost-compress v0.0.6/go.mod h1:d2hF+Mw1Gnksof6bN1rgLh8MsM0kTyjnqKupJEenklU=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
