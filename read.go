@@ -83,7 +83,7 @@ func newMsgReader(c *Conn) *msgReader {
 		c:   c,
 		fin: true,
 	}
-	mr.readFunc = mr.read
+	mr.readFunc = mr
 	mr.limitReader = newLimitReader(c, mr.readFunc, defaultReadLimit+1)
 	return mr
 }
@@ -345,7 +345,7 @@ type msgReader struct {
 	maskKey       uint32
 
 	// readerFunc(mr.Read) to avoid continuous allocations.
-	readFunc readerFunc
+	readFunc io.Reader
 }
 
 func (mr *msgReader) reset(ctx context.Context, h header) {
@@ -439,7 +439,7 @@ type limitReader struct {
 	n     int64
 }
 
-func newLimitReader(c *Conn, r readerFunc, limit int64) *limitReader {
+func newLimitReader(c *Conn, r io.Reader, limit int64) *limitReader {
 	lr := &limitReader{
 		c: c,
 	}
@@ -448,9 +448,9 @@ func newLimitReader(c *Conn, r readerFunc, limit int64) *limitReader {
 	return lr
 }
 
-func (lr *limitReader) reset(r readerFunc) {
+func (lr *limitReader) reset(r io.Reader) {
 	lr.n = lr.limit.Load()
-	lr.r = io.Reader(r)
+	lr.r = r
 }
 
 func (lr *limitReader) Read(p []byte) (int, error) {
