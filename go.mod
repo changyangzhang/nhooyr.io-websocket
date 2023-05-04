@@ -3,7 +3,7 @@ module github.com/changyangzhang/nhooyr.io-websocket
 go 1.13
 
 require (
-	github.com/changyangzhang/klauspost-compress v0.0.5
+	github.com/changyangzhang/klauspost-compress v0.0.6
 	github.com/gin-gonic/gin v1.6.3
 	github.com/gobwas/httphead v0.1.0 // indirect
 	github.com/gobwas/pool v0.2.1 // indirect
