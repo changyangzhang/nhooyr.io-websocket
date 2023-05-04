@@ -93,7 +93,8 @@ func (mr *msgReader) resetFlate() {
 		mr.dict.init(32768)
 	}
 	if mr.flateBufio == nil {
-		mr.flateBufio = getBufioReader(mr.readFunc)
+		r := mr.readFunc
+		mr.flateBufio = getBufioReader(io.Reader(r))
 	}
 
 	mr.flateReader = getFlateReader(mr.flateBufio, mr.dict.buf)
