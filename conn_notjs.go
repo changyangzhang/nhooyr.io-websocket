@@ -1,3 +1,4 @@
+//go:build !js
 // +build !js
 
 package websocket
@@ -8,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"runtime"
 	"strconv"
 	"sync"
@@ -146,6 +148,7 @@ func (c *Conn) close(err error) {
 }
 
 func (c *Conn) timeoutLoop() {
+	log.Printf("staring time loop")
 	readCtx := context.Background()
 	writeCtx := context.Background()
 

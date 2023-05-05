@@ -43,9 +43,9 @@ func TestBadDials(t *testing.T) {
 			},
 			{
 				name: "badReader",
-				rand: func(p []byte) (int, error) {
+				rand: readerFunc{func(p []byte) (int, error) {
 					return 0, io.EOF
-				},
+				}},
 			},
 		}
 
@@ -57,8 +57,8 @@ func TestBadDials(t *testing.T) {
 				ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 				defer cancel()
 
-				if tc.rand == nil {
-					tc.rand = rand.Reader.Read
+				if tc.rand.rf == nil {
+					tc.rand.rf = rand.Reader.Read
 				}
 
 				_, _, err := dial(ctx, tc.url, tc.opts, tc.rand)
