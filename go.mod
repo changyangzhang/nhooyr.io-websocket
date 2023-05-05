@@ -1,6 +1,6 @@
 module github.com/changyangzhang/nhooyr.io-websocket
 
-go 1.13
+go 1.19
 
 require (
 	github.com/changyangzhang/klauspost-compress v0.0.6
