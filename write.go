@@ -93,7 +93,7 @@ func newMsgWriterState(c *Conn) *msgWriterState {
 func (mw *msgWriterState) ensureFlate() {
 	if mw.trimWriter == nil {
 		mw.trimWriter = &trimLastFourBytesWriter{
-			w: writerFunc(mw.write),
+			w: writerFunc{mw.write},
 		}
 	}
 
@@ -368,20 +368,25 @@ func (c *Conn) writeFramePayload(p []byte) (n int, err error) {
 	return n, nil
 }
 
-type writerFunc func(p []byte) (int, error)
+type writerFunc struct {
+	wf func(p []byte) (int, error)
+}
 
 func (f writerFunc) Write(p []byte) (int, error) {
-	return f(p)
+	return f.wf(p)
 }
 
 // extractBufioWriterBuf grabs the []byte backing a *bufio.Writer
 // and returns it.
 func extractBufioWriterBuf(bw *bufio.Writer, w io.Writer) []byte {
 	var writeBuf []byte
-	bw.Reset(writerFunc(func(p2 []byte) (int, error) {
-		writeBuf = p2[:cap(p2)]
-		return len(p2), nil
-	}))
+	we := writerFunc{
+		wf: func(p2 []byte) (int, error) {
+			writeBuf = p2[:cap(p2)]
+			return len(p2), nil
+		},
+	}
+	bw.Reset(we)
 
 	bw.WriteByte(0)
 	bw.Flush()

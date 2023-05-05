@@ -8,13 +8,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/changyangzhang/nhooyr.io-websocket/internal/errd"
+	"github.com/changyangzhang/nhooyr.io-websocket/internal/xsync"
 	"io"
 	"io/ioutil"
 	"strings"
 	"time"
-
-	"github.com/changyangzhang/nhooyr.io-websocket/internal/errd"
-	"github.com/changyangzhang/nhooyr.io-websocket/internal/xsync"
 )
 
 // Reader reads from the connection until there is a WebSocket
@@ -83,7 +82,8 @@ func newMsgReader(c *Conn) *msgReader {
 		c:   c,
 		fin: true,
 	}
-	mr.readFunc = mr
+	mr.readFunc.rf = mr.read
+
 	mr.limitReader = newLimitReader(c, mr.readFunc, defaultReadLimit+1)
 	return mr
 }
@@ -93,8 +93,7 @@ func (mr *msgReader) resetFlate() {
 		mr.dict.init(32768)
 	}
 	if mr.flateBufio == nil {
-		r := mr.readFunc
-		mr.flateBufio = getBufioReader(io.Reader(r))
+		mr.flateBufio = getBufioReader(mr.readFunc)
 	}
 
 	mr.flateReader = getFlateReader(mr.flateBufio, mr.dict.buf)
@@ -345,7 +344,7 @@ type msgReader struct {
 	maskKey       uint32
 
 	// readerFunc(mr.Read) to avoid continuous allocations.
-	readFunc io.Reader
+	readFunc readerFunc
 }
 
 func (mr *msgReader) reset(ctx context.Context, h header) {
@@ -468,8 +467,10 @@ func (lr *limitReader) Read(p []byte) (int, error) {
 	return n, err
 }
 
-type readerFunc func(p []byte) (int, error)
+type readerFunc struct {
+	rf func(p []byte) (int, error)
+}
 
 func (f readerFunc) Read(p []byte) (int, error) {
-	return f(p)
+	return f.rf(p)
 }
