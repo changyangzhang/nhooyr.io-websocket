@@ -157,7 +157,9 @@ func (c *Conn) timeoutLoop() {
 			return
 
 		case writeCtx = <-c.writeTimeout:
+			fmt.Print("writeCtx started")
 		case readCtx = <-c.readTimeout:
+			fmt.Print("writeCtx started")
 
 		case <-readCtx.Done():
 			c.setCloseErr(fmt.Errorf("read timed out: %w", readCtx.Err()))
