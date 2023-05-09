@@ -149,6 +149,7 @@ func (c *Conn) close(err error) {
 func (c *Conn) timeoutLoop() {
 	readCtx := context.TODO()
 	writeCtx := context.TODO()
+	fmt.Print("timeoutLoop started")
 
 	for {
 		select {
@@ -156,9 +157,7 @@ func (c *Conn) timeoutLoop() {
 			return
 
 		case writeCtx = <-c.writeTimeout:
-			fmt.Print("writeCtx started")
 		case readCtx = <-c.readTimeout:
-			fmt.Print("readCtx started")
 
 		case <-readCtx.Done():
 			c.setCloseErr(fmt.Errorf("read timed out: %w", readCtx.Err()))
