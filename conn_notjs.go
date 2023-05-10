@@ -117,6 +117,31 @@ func newConn(cfg connConfig) *Conn {
 	return c
 }
 
+func (c *Conn) timeoutLoop() {
+	readCtx := context.Background()
+	writeCtx := context.Background()
+	fmt.Print(" timeout loop started")
+
+	for {
+		select {
+		case <-c.closed:
+			return
+
+		case writeCtx = <-c.writeTimeout:
+			fmt.Print(" writeCtx loop started")
+		case readCtx = <-c.readTimeout:
+			fmt.Print(" readCtx loop started")
+
+		case <-readCtx.Done():
+			c.setCloseErr(fmt.Errorf("read timed out: %w", readCtx.Err()))
+			go c.writeError(StatusPolicyViolation, errors.New("timed out"))
+		case <-writeCtx.Done():
+			c.close(fmt.Errorf("write timed out: %w", writeCtx.Err()))
+			return
+		}
+	}
+}
+
 // Subprotocol returns the negotiated subprotocol.
 // An empty string means the default protocol.
 func (c *Conn) Subprotocol() string {
@@ -144,31 +169,6 @@ func (c *Conn) close(err error) {
 
 		c.msgReader.close()
 	}()
-}
-
-func (c *Conn) timeoutLoop() {
-	readCtx := context.TODO()
-	writeCtx := context.TODO()
-	fmt.Print("timeoutLoop started")
-
-	for {
-		select {
-		case <-c.closed:
-			return
-
-		case writeCtx = <-c.writeTimeout:
-			fmt.Print("writeCtx started")
-		case readCtx = <-c.readTimeout:
-			fmt.Print("writeCtx started")
-
-		case <-readCtx.Done():
-			c.setCloseErr(fmt.Errorf("read timed out: %w", readCtx.Err()))
-			go c.writeError(StatusPolicyViolation, errors.New("timed out"))
-		case <-writeCtx.Done():
-			c.close(fmt.Errorf("write timed out: %w", writeCtx.Err()))
-			return
-		}
-	}
 }
 
 func (c *Conn) flate() bool {
